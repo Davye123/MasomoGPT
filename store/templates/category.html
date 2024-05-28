@@ -104,8 +104,8 @@
     </div>
     <!-- Navbar End -->
 
-    <!-- Modal Search Start -->
-    <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <!-- Modal Search Start -->
+      <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-fullscreen">
             <div class="modal-content rounded-0">
                 <div class="modal-header">
@@ -113,10 +113,10 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body d-flex align-items-center">
-                    <div class="input-group w-75 mx-auto d-flex">
-                        <input type="search" class="form-control p-3" placeholder="keywords" aria-describedby="search-icon-1">
-                        <span id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></span>
-                    </div>
+                    <form class="input-group w-75 mx-auto d-flex" method="get" action="{% url 'store:search' %}">
+                        <input type="search" name="q" class="form-control p-3" placeholder="keywords" aria-describedby="search-icon-1">
+                        <button type="submit" id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -158,7 +158,7 @@
                     <div class="mb-3">
                         <h4 class="mb-2">Price</h4>
                         <input type="range" class="form-range w-100" id="rangeInput" name="rangeInput" min="0" max="500" value="0" oninput="amount.value=rangeInput.value">
-                        <output id="amount" name="amount" min-velue="0" max-value="500" for="rangeInput">0</output>
+                        <output id="amount" name="amount" min-value="0" max-value="500" for="rangeInput">0</output>
                     </div>
                 </div>
                 <!-- Sidebar End -->
@@ -166,30 +166,71 @@
                 <!-- Books Start -->
                 <div class="col-lg-9">
                     <div class="row g-4">
-                        {% for book in books %}
-                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                            <div class="card" style="width: 14rem;">
-                                <img src="{{ book.coverpage.url }}" class="card-img-top" alt="{{ book.name }}" style="height: 200px; object-fit: cover;">
-                                <div class="card-body">
-                                    <h6 class="card-title">{{ book.name }}</h6>
-                                    <p class="card-text">Price:{{ book.price }} sh</p>
-                                    <div class="rating mt-2">
-                                        <span class="average-rating">{{ book.totalrating|averagerating:book.totalreview }}</span>
-                                        <a href='getreview' class="total-reviews"><span class='totalrating'>{{ book.totalreview|add:-1}}</span></a>
+                        {% if books %}
+                            {% for book in books %}
+                            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                                <div class="card" style="width: 14rem;">
+                                    <img src="{{ book.coverpage.url }}" class="card-img-top" alt="{{ book.name }}" style="height: 200px; object-fit: cover;">
+                                    <div class="card-body">
+                                        <h6 class="card-title">{{ book.name }}</h6>
+                                        <p class="card-text">Price: {{ book.price }} sh</p>
+                                        <div class="rating mt-2">
+                                            <span class="average-rating">{{ book.totalrating|averagerating:book.totalreview }}</span>
+                                            <a href='getreview' class="total-reviews"><span class='totalrating'>{{ book.totalreview|add:-1 }}</span></a>
+                                        </div>
+                                        <br>
+                                        <a href="{% url 'store:book' id=book.id %}" class="btn btn-primary btn-sm">View Book</a>
                                     </div>
-                                    <br>
-                                    <a href="{% url 'store:book' id=book.id %}" class="btn btn-primary btn-sm">view Book</a>
                                 </div>
                             </div>
-                        </div>
-                        {% endfor %}
+                            {% endfor %}
+                        {% else %}
+                            <h3 class="text-center mt-5">There are no books found.</h3>
+                        {% endif %}
                     </div>
+                    <!-- Pagination -->
+                    {% if books.has_other_pages %}
+                    <div class="d-pagination">
+                        <ul class="pagination">
+                            {% if books.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=1">First</a>
+                                </li>                                
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ books.previous_page_number }}">Previous</a>
+                                </li>
+                            {% endif %}
+                            {% for ord in books.paginator.page_range %}
+                                {% if books.number == ord %}
+                                    <li class="page-item active">
+                                        <span class="page-link">{{ ord }}
+                                            <span class="sr-only">(current)</span>
+                                        </span>
+                                    </li>
+                                {% elif ord > books.number|add:'-3' and ord < books.number|add:'3' %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ ord }}">{{ ord }}</a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                            {% if books.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ books.next_page_number }}">Next</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ books.paginator.num_pages }}">Last</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    {% endif %}
                 </div>
                 <!-- Books End -->
             </div>
         </div>
     </div>
     <!-- Shop End -->
+
 
     <!-- Footer Start -->
     <div class="container-fluid bg-dark text-white-50 footer mt-5 pt-5">

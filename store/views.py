@@ -6,6 +6,7 @@ from .models import Category,publisher, Book, Review
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages 
+from django.db.models import Q
 # Create your views here.
 
 
@@ -125,13 +126,43 @@ def get_book(request, id):
     }
     return render(request, "book.html", context)
 
+#-----search-----#
+
+def search(request):
+    search = request.GET.get('q')
+    books = Book.objects.all()
+    if search:
+        books = books.filter(
+            Q(name__icontains=search) | Q(category__name__icontains=search) | Q(publisher__name__icontains=search)
+        )
+
+    paginator = Paginator(books, 10)
+    page = request.GET.get('page')
+    books = paginator.get_page(page)
+
+    categories = Category.objects.all()  # Fetch categories
+
+    context = {
+        "books": books,
+        "search": search,
+        "categories": categories,  # Add categories to context
+    }
+    return render(request, 'category.html', context)
+
+    
+
+
+
+
+#------Publisher-----#
+
 
 @login_required(login_url='store:signin')
 def get_publisher(request, id):
     pub = get_object_or_404(publisher, id=id)
     book = Book.objects.filter(publisher_id=pub.id)
     context = {
-        "wrt": pub,
+        "pub": pub,
         "book": book
     }
     return render(request, "store/writer.html", context)
