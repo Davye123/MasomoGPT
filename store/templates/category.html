@@ -142,54 +142,54 @@
                 <div class="container py-5">
                     <h1 class="mb-4">MasomoGPT</h1>
                     <div class="row g-4">
-                    <!-- Sidebar Start (Visible on large devices) -->
-                    <div class="col-lg-3 d-none d-lg-block">
-                        <div class="mb-3">
-                            <h4>Categories</h4>
-                            <ul class="list-unstyled text-center mb-5">
-                                {% for category in categories %}
-                                <li>
-                                    <div class="d-flex justify-content-between">
-                                        <a class="d-flex m-2 py-2 bg-primary rounded-pill" href="{% url 'store:get_book_category' category.id %}">
-                                            <span class="text-dark" style="width: 130px;">{{ category.name }}</span>
-                                        </a>
-                                    </div>
-                                </li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                        <div class="mb-3">
-                            <h4 class="mb-2">Price</h4>
-                            <input type="range" class="form-range w-100" id="rangeInput" name="rangeInput" min="0" max="500" value="0" oninput="amount.value=rangeInput.value">
-                            <output id="amount" name="amount" min-value="0" max-value="500" for="rangeInput">0</output>
-                        </div>
-                    </div>
-                    <!-- Sidebar End -->
-
-                    <!-- Horizontal Categories for Small Devices -->
-                    <div class="col-12 d-lg-none mb-3">
-                        <div class="tab-class text-center">
-                            <div class="row g-4 align-items-center">
-                                <div class="col-12 d-flex justify-content-center">
-                                    <ul class="nav nav-pills d-inline-flex text-center mb-3">
-                                        {% for category in categories %}
-                                        <li class="nav-item">
+                        <!-- Sidebar Start (Visible on large devices) -->
+                        <div class="col-lg-3 d-none d-lg-block">
+                            <div class="mb-3">
+                                <h4>Categories</h4>
+                                <ul class="list-unstyled text-center mb-5">
+                                    {% for category in categories %}
+                                    <li>
+                                        <div class="d-flex justify-content-between">
                                             <a class="d-flex m-2 py-2 bg-primary rounded-pill" href="{% url 'store:get_book_category' category.id %}">
-                                                <span class="text-dark px-2">{{ category.name }}</span>
+                                                <span class="text-dark" style="width: 130px;">{{ category.name }}</span>
                                             </a>
-                                        </li>
-                                        {% endfor %}
-                                    </ul>
-                                </div>
+                                        </div>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            <div class="mb-3">
+                                <h4 class="mb-2">Price</h4>
+                                <input type="range" class="form-range w-100" id="rangeInput" name="rangeInput" min="0" max="500" value="0" oninput="amount.value=rangeInput.value">
+                                <output id="amount" name="amount" min-value="0" max-value="500" for="rangeInput">0</output>
                             </div>
                         </div>
-                        <div class="mb-3">
-                            <h4 class="mb-2">Price</h4>
-                            <input type="range" class="form-range w-100" id="rangeInput" name="rangeInput" min="0" max="500" value="0" oninput="amount.value=rangeInput.value">
-                            <output id="amount" name="amount" min-value="0" max-value="500" for="rangeInput">0</output>
+                        <!-- Sidebar End -->
+
+                        <!-- Horizontal Categories for Small Devices -->
+                        <div class="col-12 d-lg-none mb-3">
+                            <div class="tab-class text-center">
+                                <div class="row g-4 align-items-center">
+                                    <div class="col-12 d-flex justify-content-center">
+                                        <ul class="nav nav-pills d-inline-flex text-center mb-3">
+                                            {% for category in categories %}
+                                            <li class="nav-item">
+                                                <a class="d-flex m-2 py-2 bg-primary rounded-pill" href="{% url 'store:get_book_category' category.id %}">
+                                                    <span class="text-dark px-2">{{ category.name }}</span>
+                                                </a>
+                                            </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <h4 class="mb-2">Price</h4>
+                                <input type="range" class="form-range w-100" id="rangeInput" name="rangeInput" min="0" max="500" value="0" oninput="amount.value=rangeInput.value">
+                                <output id="amount" name="amount" min-value="0" max-value="500" for="rangeInput">0</output>
+                            </div>
                         </div>
-                    </div>
-                    <!-- Horizontal end  Categories for Small Devices -->
+                        <!-- Horizontal end  Categories for Small Devices -->
                     
                         <!-- Books Start -->
                         <div class="col-lg-9">
