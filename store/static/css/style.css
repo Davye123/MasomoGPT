@@ -670,3 +670,34 @@
     font-size: 0.9em;
     color: #666;
 }
+
+
+
+
+#pdfContainer {
+    display: none;
+    margin-top: 20px;
+}
+#pdfViewer {
+    overflow-y: scroll;
+    height: 600px;
+}
+@media (max-width: 768px) {
+    #pdfViewer {
+        height: 400px; /* Adjust height for smaller screens */
+    }
+}
+@media (max-width: 576px) {
+    #pdfViewer {
+        height: 300px; /* Adjust height for extra small screens */
+    }
+}
+.canvas-wrapper {
+    text-align: center; /* Center the canvas */
+}
+.canvas-wrapper canvas {
+    width: 100% !important; /* Ensure canvas width is 100% */
+    height: auto !important; /* Maintain aspect ratio */
+}
+
+
