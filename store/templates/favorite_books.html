@@ -137,9 +137,6 @@
                                 </div>                              
                             </div>
                         {% endfor %}
-                        <div class="col-sm-12" id="pdfContainer">
-                            <div id="pdfViewer"></div>
-                        </div>
                     </div>
                 {% else %}
                     <p>You have no favorite books. <a href="{% url 'store:books' %}">Browse books</a> to add to your favorites.</p>
@@ -257,7 +254,7 @@
             function loadPDF(url) {
                 var pdfContainer = document.getElementById('pdfContainer');
                 var pdfViewer = document.getElementById('pdfViewer');
-                var favoriteBooks = document.querySelector('.col-lg-3 ');
+                var favoriteBooks = document.querySelector('.row ');
                 pdfViewer.innerHTML = ''; // Clear previous PDF pages
     
                 pdfContainer.style.display = 'block';
