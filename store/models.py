@@ -37,10 +37,6 @@ class Book(models.Model):
 
 	def __str__(self):
 	    return self.name
-
-
-	
-
 	
  
 class Review(models.Model):
@@ -49,3 +45,14 @@ class Review(models.Model):
 	review_star = models.IntegerField()
 	review_text = models.TextField()
 	created = models.DateTimeField(auto_now_add=True)
+ 
+ 
+ 
+
+class Favorite(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    added_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'book') 

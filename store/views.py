@@ -2,11 +2,12 @@ from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth import authenticate, login,logout
 from .forms import RegistrationForm,ReviewForm
 from django.core.paginator import  Paginator
-from .models import Category,publisher, Book, Review
+from .models import Category,publisher, Book, Review,Favorite
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages 
 from django.db.models import Q
+from django.http import JsonResponse
 # Create your views here.
 
 
@@ -14,7 +15,7 @@ from django.db.models import Q
 def index(request):
     categories = Category.objects.all()
     newpublished = Book.objects.order_by('-created')[:15]
-    return render(request, 'index.html', {'categories': categories,'newpublished':newpublished})
+    return render(request, 'index.html', {'categories': categories,'newpublished':newpublished},)
     
     
 
@@ -168,7 +169,30 @@ def get_publisher(request, id):
     return render(request, "store/writer.html", context)
 
 
+@login_required
+def favorite_books(request):
+    favorites = Favorite.objects.filter(user=request.user).select_related('book')
+    return render(request, 'favorite_books.html', {'favorites': favorites})
 
 
 
+@login_required
+def add_to_favorites(request, book_id):
+    book = get_object_or_404(Book, id=book_id)
+    favorite, created = Favorite.objects.get_or_create(user=request.user, book=book)
+    if created:
+        return JsonResponse({'status': 'success', 'message': 'Book added to favorites'})
+    else:
+        return JsonResponse({'status': 'info', 'message': 'Book already in favorites'})
+
+@login_required
+def remove_from_favorites(request, book_id):
+    book = get_object_or_404(Book, id=book_id)
+    favorite = Favorite.objects.filter(user=request.user, book=book).first()
+    if favorite:
+        favorite.delete()
+        return JsonResponse({'status': 'success', 'message': 'Book removed from favorites'})
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Book not in favorites'})
+    
 

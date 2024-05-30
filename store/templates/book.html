@@ -6,6 +6,7 @@
         {% load static %}
         {% load crispy_forms_tags %}
         {% load customfunction %}
+        {% csrf_token %}
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
         <meta content="" name="keywords">
         <meta content="" name="description">
@@ -70,7 +71,7 @@
                         <div class="d-flex m-3 me-0">
                             {% if request.user.is_authenticated %}
                             <button class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search text-primary"></i></button>
-                            <a href="#" class="position-relative me-4 my-auto">
+                            <a href="{% url "store:favorite_books" %}" class="position-relative me-4 my-auto">
                                 <i class="fa fa-shopping-bag fa-2x"></i>
                                 
                             </a>
@@ -79,7 +80,7 @@
                             </a>
                             {% else %}
                             <button class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search text-primary"></i></button>
-                            <a href="#" class="position-relative me-4 my-auto">
+                            <a href="{% url "store:favorite_books" %}" class="position-relative me-4 my-auto">
                                 <i class="fa fa-shopping-bag fa-2x"></i>
                                
                             </a>
@@ -199,6 +200,9 @@
                                 <div class="pricebox">
                                     <a href="#" onclick="loadPDF('{{ book.bookpage.url }}')" class="btn btn-primary">Read Book</a>
                                 </div>
+                                <div class="pricebox">
+                                    <a href="#" onclick="addToFavorites({{ book.id }})" class="btn btn-primary">Add to Favorites</a>
+                                </div>
                             </div>
                         </div>
                         <!-- Container for the embedded PDF viewer -->
@@ -211,6 +215,24 @@
         </div>
 
         <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script>
+            function addToFavorites(bookId) {
+                fetch(`/add_to_favorites/${bookId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            }
+        </script>
         <script>
             $(document).on('ready', function() {
                 $(document).on('click', '.lookInsideImg,.lookInsideBg', function(e) {
