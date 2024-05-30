@@ -680,7 +680,7 @@
 }
 #pdfViewer {
     overflow-y: scroll;
-    height: 600px;
+    height: 800px;
 }
 @media (max-width: 768px) {
     #pdfViewer {
@@ -689,7 +689,7 @@
 }
 @media (max-width: 576px) {
     #pdfViewer {
-        height: 300px; /* Adjust height for extra small screens */
+        height: 500px; /* Adjust height for extra small screens */
     }
 }
 .canvas-wrapper {

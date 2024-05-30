@@ -132,7 +132,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                
+                                <a href="#" onclick="loadPDF('{{ favorite.book.bookpage.url }}')" class="btn btn-primary">Read Book</a>
                                 <button class="btn btn-danger" onclick="removeFromFavorites({{ favorite.book.id }})">Remove from Favorites</button>
                                 
                                 
@@ -142,8 +142,15 @@
                 {% else %}
                     <p>You have no favorite books. <a href="{% url 'store:books' %}">Browse books</a> to add to your favorites.</p>
                 {% endif %}
+
+                <div class="col-sm-12" id="pdfContainer">
+                    <div id="pdfViewer"></div>
+                </div>
+                
             </div>
         </div>
+       
+        
         <!-- Footer Start -->
         <div class="container-fluid bg-dark text-white-50 footer pt-5 mt-5">
             <div class="container py-5">
@@ -249,8 +256,47 @@
                     console.error('Error:', error);
                 });
             }
-
-
+        
+            function loadPDF(url) {
+                var pdfContainer = document.getElementById('pdfContainer');
+                var pdfViewer = document.getElementById('pdfViewer');
+                var favoriteBooksContainer = document.querySelector('.list-group');
+                pdfViewer.innerHTML = ''; // Clear previous PDF pages
+    
+                pdfContainer.style.display = 'block';
+                favoriteBooksContainer.style.display = 'none';
+    
+                // Load the PDF using pdf.js
+                pdfjsLib.getDocument(url).promise.then(function(pdf) {
+                    var numPages = pdf.numPages;
+    
+                    for (var i = 1; i <= numPages; i++) {
+                        renderPage(pdf, i, pdfViewer);
+                    }
+                }).catch(function(error) {
+                    console.error('Error loading PDF: ' + error);
+                });
+            }
+    
+            function renderPage(pdf, pageNumber, pdfViewer) {
+                pdf.getPage(pageNumber).then(function(page) {
+                    var viewport = page.getViewport({ scale: 1 });
+                    var canvasWrapper = document.createElement('div');
+                    canvasWrapper.classList.add('canvas-wrapper');
+                    var canvas = document.createElement('canvas');
+                    var context = canvas.getContext('2d');
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+                    canvasWrapper.appendChild(canvas);
+                    pdfViewer.appendChild(canvasWrapper);
+    
+                    var renderContext = {
+                        canvasContext: context,
+                        viewport: viewport
+                    };
+                    page.render(renderContext);
+                });
+            }
             
         </script> 
 
