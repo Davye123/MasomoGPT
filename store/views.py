@@ -88,7 +88,7 @@ def get_book_category(request, id):
     return render(request, "category.html", {"books": book, "categories": categories, "category": category})
 
 
-#-------Get Book-----#
+#-------Get Book Review-----#
 
 @login_required(login_url='store:signin')
 def get_book(request, id):

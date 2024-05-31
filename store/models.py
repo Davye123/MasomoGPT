@@ -22,23 +22,41 @@ class publisher(models.Model):
 		return self.name
 
 class Book(models.Model):
-	publisher = models.ForeignKey(publisher, on_delete = models.CASCADE)
-	category = models.ForeignKey(Category, on_delete = models.CASCADE)
-	name = models.CharField(max_length = 100)
-	slug = models.SlugField(max_length=100, db_index=True)
-	price = models.IntegerField()
-	coverpage = models.FileField(upload_to = "coverpage/")
-	bookpage = models.FileField(upload_to = "bookpage/")
-	created = models.DateTimeField(auto_now_add=True)
-	updated = models.DateTimeField(auto_now=True)
-	totalreview = models.IntegerField(default=1)
-	totalrating = models.IntegerField(default=5)
-	description = models.TextField()
+    publisher = models.ForeignKey(publisher, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+    slug = models.SlugField(max_length=100, db_index=True)
+    price = models.IntegerField()
+    coverpage = models.FileField(upload_to="coverpage/")
+    bookpage = models.FileField(upload_to="bookpage/")
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    totalreview = models.IntegerField(default=1)
+    totalrating = models.IntegerField(default=5)
+    description = models.TextField()
+    document_type = models.CharField(max_length=10, choices=[('pdf', 'PDF'), ('image', 'Image'), ('text', 'Text'), ('word', 'Word'), ('excel', 'Excel')], default='pdf')
 
-	def __str__(self):
-	    return self.name
-	
- 
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        self.document_type = self.get_document_type()
+        super().save(*args, **kwargs)
+
+    def get_document_type(self):
+        ext = self.bookpage.name.split('.')[-1].lower()
+        if ext in ['pdf']:
+            return 'pdf'
+        elif ext in ['jpg', 'jpeg', 'png', 'gif']:
+            return 'image'
+        elif ext in ['txt']:
+            return 'text'
+        elif ext in ['doc', 'docx']:
+            return 'word'
+        elif ext in ['xls', 'xlsx']:
+            return 'excel'
+        return 'unknown'
+
 class Review(models.Model):
 	customer = models.ForeignKey(User, on_delete = models.CASCADE)
 	book = models.ForeignKey(Book, on_delete = models.CASCADE)

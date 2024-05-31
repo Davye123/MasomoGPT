@@ -198,21 +198,23 @@
                             </div>
                             <div class="col-sm-3">
                                 <div class="pricebox">
-                                    <a href="#" onclick="loadPDF('{{ book.bookpage.url }}')" class="btn btn-primary">Read Book</a>
+                                    <a href="#" onclick="loadDocument('{{ book.bookpage.url }}', '{{ book.document_type }}')" class="btn btn-primary">Read Document</a>
                                 </div>
                                 <div class="pricebox">
                                     <a href="#" onclick="addToFavorites({{ book.id }})" class="btn btn-primary">Add to Favorites</a>
                                 </div>
                             </div>
                         </div>
-                        <!-- Container for the embedded PDF viewer -->
-                        <div class="col-sm-12" id="pdfContainer">
-                            <div id="pdfViewer"></div>
+                        <div class="col-sm-12" id="documentContainer">
+                            <div id="documentViewer"></div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.min.js"></script>
+
 
         <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
         <script>
@@ -253,43 +255,58 @@
                 });
             });
 
-            function loadPDF(url) {
-                var pdfContainer = document.getElementById('pdfContainer');
-                var pdfViewer = document.getElementById('pdfViewer');
-                pdfViewer.innerHTML = ''; // Clear previous PDF pages
-    
-                pdfContainer.style.display = 'block';
-    
+            function loadDocument(url, type) {
+                var documentContainer = document.getElementById('documentContainer');
+                var documentViewer = document.getElementById('documentViewer');
+                documentViewer.innerHTML = ''; // Clear previous content
+
+                documentContainer.style.display = 'block';
+
                 // Hide book details if needed
                 var bookDetails = document.getElementById('bookDetails');
                 if (bookDetails) {
                     bookDetails.style.display = 'none';
                 }
-    
-                // Load the PDF using pdf.js
+
+                switch (type) {
+                    case 'pdf':
+                        loadPDF(url);
+                        break;
+                    case 'image':
+                        loadImage(url);
+                        break;
+                    case 'text':
+                        loadText(url);
+                        break;
+                    case 'word':
+                    case 'excel':
+                        loadOfficeDocument(url);
+                        break;
+                    default:
+                        console.error('Unsupported document type: ' + type);
+                }
+            }
+
+            function loadPDF(url) {
                 pdfjsLib.getDocument(url).promise.then(function(pdf) {
                     var numPages = pdf.numPages;
-    
                     for (var i = 1; i <= numPages; i++) {
-                        renderPage(pdf, i, pdfViewer);
+                        renderPage(pdf, i);
                     }
                 }).catch(function(error) {
                     console.error('Error loading PDF: ' + error);
                 });
             }
-    
-            function renderPage(pdf, pageNumber, pdfViewer) {
+
+            function renderPage(pdf, pageNumber) {
                 pdf.getPage(pageNumber).then(function(page) {
                     var viewport = page.getViewport({ scale: 1 });
-                    var canvasWrapper = document.createElement('div');
-                    canvasWrapper.classList.add('canvas-wrapper');
                     var canvas = document.createElement('canvas');
                     var context = canvas.getContext('2d');
                     canvas.height = viewport.height;
                     canvas.width = viewport.width;
-                    canvasWrapper.appendChild(canvas);
-                    pdfViewer.appendChild(canvasWrapper);
-    
+                    document.getElementById('documentViewer').appendChild(canvas);
+
                     var renderContext = {
                         canvasContext: context,
                         viewport: viewport
@@ -297,6 +314,36 @@
                     page.render(renderContext);
                 });
             }
+
+            function loadImage(url) {
+                var img = document.createElement('img');
+                img.src = url;
+                img.style.width = '100%';
+                document.getElementById('documentViewer').appendChild(img);
+            }
+
+            function loadText(url) {
+                fetch(url)
+                .then(response => response.text())
+                .then(data => {
+                    var pre = document.createElement('pre');
+                    pre.textContent = data;
+                    document.getElementById('documentViewer').appendChild(pre);
+                })
+                .catch(error => {
+                    console.error('Error loading text document: ' + error);
+                });
+            }
+
+            function loadOfficeDocument(url) {
+                var iframe = document.createElement('iframe');
+                iframe.src = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(url)}`;
+                iframe.width = '100%';
+                iframe.height = '600px';
+                iframe.style.border = 'none';
+                document.getElementById('documentViewer').appendChild(iframe);
+            }
+            
         </script>
 
         

@@ -671,33 +671,11 @@
     color: #666;
 }
 
-
-
-
-#pdfContainer {
-    display: none;
-    margin-top: 20px;
+.document-container {
+    border: 1px solid #ddd; /* Add a border */
+    padding: 20px; /* Add padding */
+    margin-top: 20px; /* Add some space between the document viewer and other content */
+    background-color: #f9f9f9; /* Light background color */
+    border-radius: 8px; /* Add rounded corners */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
 }
-#pdfViewer {
-    overflow-y: scroll;
-    height: 1000px;
-}
-@media (max-width: 768px) {
-    #pdfViewer {
-        height: 600px; /* Adjust height for smaller screens */
-    }
-}
-@media (max-width: 576px) {
-    #pdfViewer {
-        height: 600px; /* Adjust height for extra small screens */
-    }
-}
-.canvas-wrapper {
-    text-align: center; /* Center the canvas */
-}
-.canvas-wrapper canvas {
-    width: 100% !important; /* Ensure canvas width is 100% */
-    height: auto !important; /* Maintain aspect ratio */
-}
-
-
